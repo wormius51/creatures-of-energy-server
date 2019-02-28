@@ -9,6 +9,12 @@ router.use('/nickName', (req, res, next) => {
     if (!req.session.nickName) {
         req.session.nickName = faker.name.findName();
     }
+    if (req.body.colors) {
+        req.session.colors = JSON.parse(req.body.colors);
+    }
+    if (req.body.eyesStyles) {
+        req.session.eyesStyles = JSON.parse(req.body.eyesStyles);
+    }
     res.send(req.session.nickName);
 });
 

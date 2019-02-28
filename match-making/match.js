@@ -44,13 +44,25 @@ function myPlayerIndex(match ,sessionID) {
 
 function matchRes(match, sessionID) {
     let names = [];
+    let colors = [];
+    let eyesStyles = [];
+    let i = 0;
     match.players.forEach(element => {
         names.push(element.nickName);
+        if (element.colors) {
+            colors.push(element.colors[i]);
+        }
+        if (element.eyesStyles) {
+            eyesStyles.push(element.eyesStyles[i]);
+        }
+        i++;
     });
     return {
         matchID : match.id,
         myIndex : myPlayerIndex(match,sessionID),
         names : names,
+        colors : colors,
+        eyesStyles : eyesStyles,
         moves : match.moves
     };
 }
