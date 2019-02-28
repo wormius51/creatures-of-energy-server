@@ -1,11 +1,9 @@
-console.log('starting app.js');
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || '5000';
-console.log('port: ' + PORT);
 const app = express();
 app.listen(PORT, () => console.log(`Listening at port ${PORT}`));
 
