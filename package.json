@@ -2,6 +2,9 @@
   "name": "creatures-of-energy",
   "version": "1.0.0",
   "description": "A backend for a unity abstract strategy game",
+  "engines": {
+    "node": "10.x"
+  },
   "main": "app.js",
   "scripts": {
     "start": "app.js",
