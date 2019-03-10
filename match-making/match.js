@@ -2,13 +2,20 @@ const uuidv1 = require('uuid/v1');
 
 var matches = [];
 
-function Match(players) {
+function Match(players,mode) {
     let id = uuidv1();
+    if (!mode) {
+        mode = 'OneVsOne';
+    }
     let match = {
+        mode : mode,
         id : id,
         players : players,
-        moves : []
+        moves : [],
+        winner : -2
     };
+    match.strikes = [];
+    match.strikes.push(0);
     matches.push(match);
     return match;
 }
@@ -32,14 +39,22 @@ function joinAvailable(player) {
     });
     if (match) {
         match.players.push(player);
+        match.strikes.push(0);
     }
     return match;
 }
 
 function myPlayerIndex(match ,sessionID) {
-    return match.players.findIndex((value) => {
+    let index = match.players.findIndex((value) => {
         return value.sessionID == sessionID;
     });
+    if (index > -1) {
+        match.strikes[index]--;
+        if (match.strikes[index] < 0) {
+            match.strikes[index] = 0;
+        }
+    }
+    return index;
 }
 
 function matchRes(match, sessionID) {
@@ -58,15 +73,34 @@ function matchRes(match, sessionID) {
         i++;
     });
     return {
+        mode : match.mode,
         matchID : match.id,
         myIndex : myPlayerIndex(match,sessionID),
         names : names,
         colors : colors,
         eyesStyles : eyesStyles,
-        moves : match.moves
+        moves : match.moves,
+        result : match.winner,
+        strikes : match.strikes
     };
 }
 
+var checkInactivityInterval = setInterval(checkInactivity, 5000);
+
+function checkInactivity() {
+    matches = matches.filter(element => {
+        for (let i = 0; i < element.strikes.length; i++) {
+            if (!element.players[i].strikable) return true;
+            element.strikes[i]++;
+            if (element.strikes[i] > 5) {
+                element.winner = (i + 1) % element.strikes.length;
+                element.finished = true;
+                return element.strikes.length > 1;
+            }
+        }
+        return true;
+    });
+}
 
 module.exports = Match;
 module.exports.remove = remove;

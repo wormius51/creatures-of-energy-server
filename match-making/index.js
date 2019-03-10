@@ -18,27 +18,41 @@ router.use('/createMatch', (req,res,next) => {
 });
 
 router.use('/seekMatch', (req,res,next) => {
-    let player = Player(req.session.id, req.session.nickName);
+    let player = Player(req.session.id, req.session.nickName || 'Guest');
     if (req.session.colors) {
         player.colors = req.session.colors;
+    } else {
+        player.colors = [0.6,0];
     }
     if (req.session.eyesStyles) {
         player.eyesStyles = req.session.eyesStyles;
+    } else {
+        player.eyesStyles = [1,1];
+    }
+    if (req.body.strikable) {
+        player.strikable = true;
     }
     let match = Match.joinAvailable(player);
     if (match) {
         let matchRes = Match.matchRes(match,player.sessionID);
         res.send(matchRes);
     } else {
-        let player = Player(req.session.id,req.session.nickName || 'Guest');
-        if (req.session.colors) {
-            player.colors = req.session.colors;
-        }
-        if (req.session.eyesStyles) {
-            player.eyesStyles = req.session.eyesStyles;
-        }
         let match = Match([player]);
         res.send(Match.matchRes(match,player.sessionID));
+    }
+});
+
+router.use('/stopSeek', (req, res, next) => {
+    if (!req.body.matchID) {
+        res.send({error : 'parameter \'matchID\' is missing'});
+        return;
+    }
+    let match = Match.getMatchByID(req.body.matchID);
+    if (match.players.length < 2) {
+        Match.remove(match.id);
+        res.send('match removed');
+    } else {
+        res.send('match is ongoing');
     }
 });
 
@@ -69,12 +83,17 @@ router.use('/getMatch', (req, res, next) => {
     }
 });
 
+
 router.use('/finishMatch', (req, res, next) => {
     if (!req.body.matchID) {
         res.send({error : 'parameter \'matchID\' is missing'});
         return;
     }
     let match = Match.getMatchByID(req.body.matchID);
+    if (!match) {
+        res.send('match is over');
+        return;
+    }
     if (match.finished) {
         Match.remove(req.body.matchID);
         res.send('removed match');
@@ -82,6 +101,16 @@ router.use('/finishMatch', (req, res, next) => {
         match.finished = true;
         res.send('set match to finish');
     }
+});
+
+router.use('/pingMatch' ,(req,res,next) => {
+    if (!req.body.matchID) {
+        res.send({error : 'parameter \'matchID\' is missing'});
+        return;
+    }
+    let match = Match.getMatchByID(req.body.matchID);
+    Match.myPlayerIndex(match,req.session.id);
+    res.send('ping');
 });
 
 
