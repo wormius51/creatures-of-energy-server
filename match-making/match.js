@@ -40,7 +40,17 @@ function joinAvailable(player) {
     if (match) {
         match.players.push(player);
         match.strikes.push(0);
+        for (let i = 0; i < match.players.length; i++) {
+            let j = Math.random() * match.players.length;
+            j = Math.floor(j);
+            if (j != i) {
+                let temp = match.players[i];
+                match.players[i] = match.players[j];
+                match.players[j] = temp;
+            }
+        }
     }
+    
     return match;
 }
 
