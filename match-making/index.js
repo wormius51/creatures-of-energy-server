@@ -32,6 +32,16 @@ router.use('/seekMatch', (req,res,next) => {
     if (req.body.strikable) {
         player.strikable = true;
     }
+    if (req.body.maxHalfSize) {
+        player.maxHalfSize = Number.parseInt(req.body.maxHalfSize);
+    } else {
+        player.maxHalfSize = 7;
+    }
+    if (req.body.minHalfSize) {
+        player.minHalfSize = Number.parseInt(req.body.minHalfSize);
+    } else {
+        player.minHalfSize = 7;
+    }
     let match = Match.joinAvailable(player);
     if (match) {
         let matchRes = Match.matchRes(match,player.sessionID);
@@ -41,6 +51,7 @@ router.use('/seekMatch', (req,res,next) => {
         res.send(Match.matchRes(match,player.sessionID));
     }
 });
+
 
 router.use('/stopSeek', (req, res, next) => {
     if (!req.body.matchID) {

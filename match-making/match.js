@@ -12,12 +12,31 @@ function Match(players,mode) {
         id : id,
         players : players,
         moves : [],
-        winner : -2
+        winner : -2,
+        maxHalfSize : 25,
+        minHalfSize : 6,
+        halfSize : 7
     };
+    adjustSizeRange(match);
     match.strikes = [];
     match.strikes.push(0);
     matches.push(match);
     return match;
+}
+
+function adjustSizeRange(match) {
+    match.players.forEach ((value) => {
+        if (value.maxHalfSize < match.maxHalfSize) {
+            match.maxHalfSize = value.maxHalfSize;
+        }
+        if (value.minHalfSize > match.minHalfSize) {
+            match.minHalfSize = value.minHalfSize;
+        }
+    });
+}
+
+function pickBardSize(match) {
+    match.halfSize = Math.floor(Math.random() * (match.maxHalfSize - match.minHalfSize + 1) + match.minHalfSize);
 }
 
 function remove(matchID) {
@@ -35,7 +54,10 @@ function getMatchByID(matchID) {
 
 function joinAvailable(player) {
     let match = matches.find((value) => {
-        return value.players.length < 2;
+        return (value.players.length < 2
+            && player.maxHalfSize >= value.minHalfSize
+            && player.minHalfSize <= value.maxHalfSize
+            );
     });
     if (match) {
         match.players.push(player);
@@ -49,8 +71,9 @@ function joinAvailable(player) {
                 match.players[j] = temp;
             }
         }
+        adjustSizeRange(match);
+        pickBardSize(match);
     }
-    
     return match;
 }
 
@@ -91,7 +114,8 @@ function matchRes(match, sessionID) {
         eyesStyles : eyesStyles,
         moves : match.moves,
         result : match.winner,
-        strikes : match.strikes
+        strikes : match.strikes,
+        halfSize : match.halfSize
     };
 }
 
