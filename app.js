@@ -16,7 +16,7 @@ var randomString = "";
 for (let i = 0; i < 5; i++) {
     randomString += Math.random().toString(36).substring(2, 15);
 }
-app.use(session({secret : randomString, resave : false, saveUninitialized : true}));
+app.use(session({secret : randomString, resave : true, saveUninitialized : true}));
 
 app.use('/session',require('./session'));
 app.use('/match-making',require('./match-making'));
