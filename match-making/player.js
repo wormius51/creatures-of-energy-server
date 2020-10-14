@@ -27,7 +27,7 @@ function getPlayerByID(ID) {
 function updatePlayer(player, req) {
     let params = req.body;
     if (req.session.id == player.sessionID) {
-        params = session;
+        params = req.session;
     }
     if (params.nickName) {
         player.nickName = params.nickName;
