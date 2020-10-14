@@ -39,6 +39,12 @@ router.use('/seekMatch', (req,res,next) => {
     if (req.body.strikable) {
         player.strikable = true;
     }
+    if (req.body.colors) {
+        player.colors = req.body.colors;
+    }
+    if (req.body.eyesStyles) {
+        player.eyesStyles = req.body.eyesStyles;
+    }
     if (req.body.maxHalfSize) {
         player.maxHalfSize = Number.parseInt(req.body.maxHalfSize);
     } else {
