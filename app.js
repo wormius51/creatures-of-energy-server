@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = process.env.PORT || '5000';
+const PORT = process.env.PORT || '5001';
 const app = express();
 app.use(cors());
 app.listen(PORT, () => console.log(`Listening at port ${PORT}`));

@@ -33,10 +33,10 @@ function updatePlayer(player, req) {
         player.nickName = params.nickName;
     }
     if (params.colors) {
-        player.colors = params.colors;
+        player.colors = JSON.parse(params.colors);
     }
     if (params.eyesStyles) {
-        player.eyesStyles = params.eyesStyles;
+        player.eyesStyles = JSON.parse(params.eyesStyles);
     }
     if (req.body.strikable) {
         player.strikable = true;
