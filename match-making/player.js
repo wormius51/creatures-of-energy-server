@@ -28,12 +28,6 @@ function updatePlayer(player, req) {
     let params = req.body;
     if (req.session.id == player.sessionID) {
         params = req.session;
-        if (params.colors) {
-            player.colors = params.colors;
-        }
-        if (params.eyesStyles) {
-            player.eyesStyles = params.eyesStyles;
-        }
     } else {
         if (params.colors) {
             player.colors = JSON.parse(params.colors);
