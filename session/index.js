@@ -39,7 +39,7 @@ router.use('/createPlayer', (req, res, next) => {
     }
     var player = Player.getPlayerByID(req.body.sessionID);
     if (player) {
-        Player.updatePlayer(player, req);
+        //Player.updatePlayer(player, req);
     } else {
         player = Player(req.session.id, nickName, colors, eyesStyles);
     }
