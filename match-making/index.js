@@ -7,7 +7,8 @@ const Player = require('./player');
 router.use('/createMatch', (req,res,next) => {
     let player = Player.getPlayerByID(req.body.sessionID);
     if (!player) {
-        player = Player(req.session.id,req.session.nickName || 'Guest');
+        player = Player(req.session.id,req.session.nickName || 'Guest',
+        req.body.colors, req.body.eyesStyles);
     }
     if (req.session.colors) {
         player.colors = req.session.colors;
