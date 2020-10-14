@@ -27,8 +27,7 @@ router.use('/createPlayer', (req, res, next) => {
     var eyesStyles = [];
     if (req.body.nickName) {
         nickName = req.body.nickName;
-    }
-    if (!req.session.nickName) {
+    } else {
         nickName = faker.name.findName();
     }
     if (req.body.colors) {
