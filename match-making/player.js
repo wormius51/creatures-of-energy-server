@@ -26,15 +26,11 @@ function getPlayerByID(ID) {
 
 function updatePlayer(player, req) {
     let params = req.body;
-    if (req.session.id == player.sessionID) {
-        params = req.session;
-    } else {
-        if (params.colors) {
-            player.colors = JSON.parse(params.colors);
-        }
-        if (params.eyesStyles) {
-            player.eyesStyles = JSON.parse(params.eyesStyles);
-        }
+    if (params.colors) {
+        player.colors = JSON.parse(params.colors);
+    }
+    if (params.eyesStyles) {
+        player.eyesStyles = JSON.parse(params.eyesStyles);
     }
     if (params.nickName) {
         player.nickName = params.nickName;
