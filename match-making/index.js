@@ -10,12 +10,7 @@ router.use('/createMatch', (req,res,next) => {
         player = Player(req.session.id,req.session.nickName || 'Guest',
         req.body.colors, req.body.eyesStyles);
     }
-    if (req.session.colors) {
-        player.colors = req.session.colors;
-    }
-    if (req.session.eyesStyles) {
-        player.eyesStyles = req.session.eyesStyles;
-    }
+    Player.updatePlayer(player, req);
     let match = Match([player]);
     
     res.send(Match.matchRes(match,player.sessionID));
@@ -26,35 +21,7 @@ router.use('/seekMatch', (req,res,next) => {
     if (!player) {
         player = Player(req.session.id, req.session.nickName || 'Guest');
     }
-    if (req.session.colors) {
-        player.colors = req.session.colors;
-    } else {
-        player.colors = [0.6,0];
-    }
-    if (req.session.eyesStyles) {
-        player.eyesStyles = req.session.eyesStyles;
-    } else {
-        player.eyesStyles = [1,1];
-    }
-    if (req.body.strikable) {
-        player.strikable = true;
-    }
-    if (req.body.colors) {
-        player.colors = req.body.colors;
-    }
-    if (req.body.eyesStyles) {
-        player.eyesStyles = req.body.eyesStyles;
-    }
-    if (req.body.maxHalfSize) {
-        player.maxHalfSize = Number.parseInt(req.body.maxHalfSize);
-    } else {
-        player.maxHalfSize = 7;
-    }
-    if (req.body.minHalfSize) {
-        player.minHalfSize = Number.parseInt(req.body.minHalfSize);
-    } else {
-        player.minHalfSize = 7;
-    }
+    Player.updatePlayer(player, req);
     let match = Match.joinAvailable(player);
     if (match) {
         let matchRes = Match.matchRes(match,player.sessionID);

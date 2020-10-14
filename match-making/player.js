@@ -24,5 +24,35 @@ function getPlayerByID(ID) {
     });
 }
 
+function updatePlayer(player, req) {
+    let params = req.body;
+    if (req.session.id == player.sessionID) {
+        params = session;
+    }
+    if (params.nickName) {
+        player.nickName = params.nickName;
+    }
+    if (params.colors) {
+        player.colors = params.colors;
+    }
+    if (params.eyesStyles) {
+        player.eyesStyles = params.eyesStyles;
+    }
+    if (req.body.strikable) {
+        player.strikable = true;
+    }
+    if (req.body.maxHalfSize) {
+        player.maxHalfSize = Number.parseInt(req.body.maxHalfSize);
+    } else {
+        player.maxHalfSize = 7;
+    }
+    if (req.body.minHalfSize) {
+        player.minHalfSize = Number.parseInt(req.body.minHalfSize);
+    } else {
+        player.minHalfSize = 7;
+    }
+}
+
 module.exports = Player;
 module.exports.getPlayerByID = getPlayerByID;
+module.exports.updatePlayer = updatePlayer;

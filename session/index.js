@@ -37,7 +37,12 @@ router.use('/createPlayer', (req, res, next) => {
     if (req.body.eyesStyles) {
         eyesStyles = JSON.parse(req.body.eyesStyles);
     }
-    var player = Player(req.session.id, nickName, colors, eyesStyles);
+    var player = Player.getPlayerByID(req.body.sessionID);
+    if (player) {
+        Player.updatePlayer(player, req);
+    } else {
+        player = Player(req.session.id, nickName, colors, eyesStyles);
+    }
     res.send(player);
 });
 
