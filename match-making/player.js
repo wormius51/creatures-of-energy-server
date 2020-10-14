@@ -2,8 +2,12 @@ var players = [];
 
 function Player(sessionID, nickName, colors, eyesStyles) {
     let player = getPlayerByID(sessionID);
-    if (player)
+    if (player) {
+        player.nickName = nickName;
+        player.colors = colors;
+        player.eyesStyles = eyesStyles;
         return player;
+    }
     player = {
         sessionID : sessionID,
         nickName : nickName,
