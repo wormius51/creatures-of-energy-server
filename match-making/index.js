@@ -5,7 +5,10 @@ const Match = require('./match');
 const Player = require('./player');
 
 router.use('/createMatch', (req,res,next) => {
-    let player = Player(req.session.id,req.session.nickName || 'Guest');
+    let player = Player.getPlayerByID(req.body.sessionID);
+    if (!player) {
+        player = Player(req.session.id,req.session.nickName || 'Guest');
+    }
     if (req.session.colors) {
         player.colors = req.session.colors;
     }
@@ -18,7 +21,10 @@ router.use('/createMatch', (req,res,next) => {
 });
 
 router.use('/seekMatch', (req,res,next) => {
-    let player = Player(req.session.id, req.session.nickName || 'Guest');
+    let player = Player.getPlayerByID(req.body.sessionID);
+    if (!player) {
+        player = Player(req.session.id, req.session.nickName || 'Guest');
+    }
     if (req.session.colors) {
         player.colors = req.session.colors;
     } else {
@@ -88,7 +94,7 @@ router.use('/getMatch', (req, res, next) => {
     }
     let match = Match.getMatchByID(req.body.matchID);
     if (match) {
-        res.send(Match.matchRes(match,req.session.id));
+        res.send(Match.matchRes(match,req.body.sessionID? req.body.sessionID : req.session.id));
     } else {
         res.send({error : 'no match'});
     }
@@ -120,7 +126,7 @@ router.use('/pingMatch' ,(req,res,next) => {
         return;
     }
     let match = Match.getMatchByID(req.body.matchID);
-    Match.myPlayerIndex(match,req.session.id);
+    Match.myPlayerIndex(match,req.body.sessionID ? req.body.sessionID : req.session.id);
     res.send('ping');
 });
 
