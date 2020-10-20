@@ -15,7 +15,8 @@ function Match(players,mode) {
         winner : -2,
         maxHalfSize : 25,
         minHalfSize : 6,
-        halfSize : 7
+        halfSize : 7,
+        privateMatch : false
     };
     adjustSizeRange(match);
     match.strikes = [];
@@ -33,6 +34,11 @@ function adjustSizeRange(match) {
             match.minHalfSize = value.minHalfSize;
         }
     });
+    if (match.minHalfSize > match.maxHalfSize) {
+        let temp = match.minHalfSize;
+        match.minHalfSize = match.maxHalfSize;
+        match.maxHalfSize = temp;
+    }
 }
 
 function pickBardSize(match) {
@@ -52,13 +58,7 @@ function getMatchByID(matchID) {
     });
 }
 
-function joinAvailable(player) {
-    let match = matches.find((value) => {
-        return (value.players.length < 2
-            && player.maxHalfSize >= value.minHalfSize
-            && player.minHalfSize <= value.maxHalfSize
-            );
-    });
+function joinMatch(match, player) {
     if (match) {
         match.players.push(player);
         match.strikes.push(0);
@@ -74,6 +74,23 @@ function joinAvailable(player) {
         adjustSizeRange(match);
         pickBardSize(match);
     }
+}
+
+function joinMatchByID(matchID, player) {
+    let match = getMatchByID(matchID);
+    joinMatch(match, player);
+    return match;
+}
+
+function joinAvailable(player) {
+    let match = matches.find((value) => {
+        return (!value.privateMatch
+            && value.players.length < 2
+            && player.maxHalfSize >= value.minHalfSize
+            && player.minHalfSize <= value.maxHalfSize
+            );
+    });
+    joinMatch(match, player);
     return match;
 }
 
@@ -140,5 +157,6 @@ module.exports = Match;
 module.exports.remove = remove;
 module.exports.getMatchByID = getMatchByID;
 module.exports.joinAvailable = joinAvailable;
+module.exports.joinMatchByID = joinMatchByID;
 module.exports.myPlayerIndex = myPlayerIndex;
 module.exports.matchRes = matchRes;

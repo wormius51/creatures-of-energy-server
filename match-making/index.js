@@ -12,7 +12,9 @@ router.use('/createMatch', (req,res,next) => {
     }
     Player.updatePlayer(player, req);
     let match = Match([player]);
-    
+    if (req.body.privateMatch) {
+        match.privateMatch = true;
+    }
     res.send(Match.matchRes(match,player.sessionID));
 });
 
@@ -22,12 +24,24 @@ router.use('/seekMatch', (req,res,next) => {
         player = Player(req.session.id, req.session.nickName || 'Guest');
     }
     Player.updatePlayer(player, req);
-    let match = Match.joinAvailable(player);
+    let match = null;
+    if (req.body.matchID) {
+        match = Match.joinMatchByID(req.body.matchID, player);
+        if (!match) {
+            res.send("No match with this ID");
+            return;
+        }
+    } else if (!req.body.privateMatch) {
+        match = Match.joinAvailable(player);
+    }
     if (match) {
         let matchRes = Match.matchRes(match,player.sessionID);
         res.send(matchRes);
     } else {
         let match = Match([player]);
+        if (req.body.privateMatch) {
+            match.privateMatch = true;
+        }
         res.send(Match.matchRes(match,player.sessionID));
     }
 });
@@ -39,11 +53,15 @@ router.use('/stopSeek', (req, res, next) => {
         return;
     }
     let match = Match.getMatchByID(req.body.matchID);
-    if (match.players.length < 2) {
-        Match.remove(match.id);
-        res.send('match removed');
+    if (match) {
+        if (match.players.length < 2) {
+            Match.remove(match.id);
+            res.send('match removed');
+        } else {
+            res.send('match is ongoing');
+        }
     } else {
-        res.send('match is ongoing');
+        res.send("no match with this ID");
     }
 });
 
