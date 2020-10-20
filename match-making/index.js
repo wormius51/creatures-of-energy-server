@@ -25,7 +25,7 @@ router.use('/seekMatch', (req,res,next) => {
     }
     Player.updatePlayer(player, req);
     let match = null;
-    if (req.body.matchID) {
+    if (req.body.privateMatch && req.body.matchID) {
         match = Match.joinMatchByID(req.body.matchID, player);
         if (!match) {
             res.send("No match with this ID");
